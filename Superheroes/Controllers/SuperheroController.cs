@@ -19,11 +19,6 @@ namespace Superheroes.Controllers
             return View("Index", superheroes);
         }
 
-        public string Mycontroller()
-        {
-            return "Hi, I am a controller";
-        }
-
         [HttpPost]
         public ActionResult Create(Superhero superhero)
         {
@@ -58,22 +53,40 @@ namespace Superheroes.Controllers
         {
             Superhero superhero = superheroRepository.GetSuperhero(id);
 
-            UpdateModel(superhero);
+            if (superhero == null)
+            {
+                return View("NotFound");
+            }
+            else
+            {
+                UpdateModel(superhero);
 
-            superheroRepository.Save();
+                superheroRepository.Save();
 
-            return View(superhero);
+                var superheroes = superheroRepository.FindAllSuperheroes();
+                return View(superhero);
+                //return RedirectToAction("Index");
+            }
         }
-
+        
         public ActionResult Delete(int id)
         {
             Superhero superhero = superheroRepository.GetSuperhero(id);
 
-            superheroRepository.Delete(superhero);
+            if (superhero == null)
+            {
+                return View("NotFound");
+            }
+            else
+            {
+                superheroRepository.Delete(superhero);
 
-            superheroRepository.Save();
+                superheroRepository.Save();
 
-            return View(superhero);
+                var superheroes = superheroRepository.FindAllSuperheroes();
+                return View("Index", superheroes);
+            }
         }
+        
     }
 }
